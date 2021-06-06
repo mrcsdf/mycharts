@@ -1,0 +1,24 @@
+apiVersion: v1
+entries:
+  plexms:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2021-06-06T16.42.48.9603346-04.00
+    description: Plex (Media Browser)
+    digest: 8CBD0F9A2A41929DC049C89FE36718528DA4E64A7886AEE2E136E1A9C7B62598
+    icon: https://github.com/smtrock/mycharts/tree/main/plexms/logo/plex.png
+    name: emby
+    urls:
+    - https://github.com/smtrock/mycharts/plexms-0.1.0.tgz
+    version: 0.1.0
+  jackett:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-19T15:52:24.178754888+02:00
+    description: Jackett - shut:p
+    digest: 078F616C360D48B92D7CB87D546C5A25163EA21D9E157F6D249FF7792104CC02
+    icon: https://raw.githubusercontent.com/Jackett/Jackett/master/src/Jackett.Tray/jackett.ico
+    name: jackett
+    urls:
+    - https://github.com/smtrock/mycharts/jackett-0.1.0.tgz
+    version: 0.1.0
