@@ -1,16 +1,16 @@
-# Default values for nzbget.
+# Default values for sonarr.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: ullbergm/nzbget
+  repository: linuxserver/heimdall
   tag: latest
   pullPolicy: Always
 
 ingress:
-  host: nzbget.media.ullberg.family
+  host: heimdall.media.ullberg.family
 
 resources: {}
 

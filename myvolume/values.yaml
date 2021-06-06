@@ -1,0 +1,5 @@
+storageClass:
+
+volumeName: myvolume
+
+storage: 512Gi

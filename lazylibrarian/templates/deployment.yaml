@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "nzbget.fullname" . }}
+  name: {{ template "lazylibrarian.fullname" . }}
   labels:
-    app: {{ template "nzbget.name" . }}
-    chart: {{ template "nzbget.chart" . }}
+    app: {{ template "lazylibrarian.name" . }}
+    chart: {{ template "lazylibrarian.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "nzbget.name" . }}
+        app: {{ template "lazylibrarian.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -33,8 +33,8 @@ spec:
             - name: TZ
               value: "EST5EDT"
           ports:
-            - name: nzbget
-              containerPort: 6789
+            - name: lazylibrarian
+              containerPort: 5299
               protocol: TCP
           volumeMounts:
             - mountPath: /config
@@ -59,7 +59,7 @@ spec:
     {{- end }}
       volumes:
         - hostPath:
-            path: /data/config/nzbget
+            path: /data/config/lazylibrarian
             type: DirectoryOrCreate
           name: config
         - hostPath:

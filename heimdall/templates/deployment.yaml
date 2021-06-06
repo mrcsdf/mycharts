@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "nzbget.fullname" . }}
+  name: {{ template "heimdall.fullname" . }}
   labels:
-    app: {{ template "nzbget.name" . }}
-    chart: {{ template "nzbget.chart" . }}
+    app: {{ template "heimdall.name" . }}
+    chart: {{ template "heimdall.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "nzbget.name" . }}
+        app: {{ template "heimdall.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -26,23 +26,15 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: PUID
-              value: "0"
-            - name: PGID
-              value: "0"
             - name: TZ
               value: "EST5EDT"
           ports:
-            - name: nzbget
-              containerPort: 6789
+            - name: heimdall
+              containerPort: 80
               protocol: TCP
           volumeMounts:
             - mountPath: /config
               name: config
-            - mountPath: /media
-              name: media
-            - mountPath: /downloads
-              name: downloads
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -59,14 +51,6 @@ spec:
     {{- end }}
       volumes:
         - hostPath:
-            path: /data/config/nzbget
+            path: /data/config/heimdall
             type: DirectoryOrCreate
           name: config
-        - hostPath:
-            path: /data/media
-            type: DirectoryOrCreate
-          name: media
-        - hostPath:
-            path: /data/downloads
-            type: DirectoryOrCreate
-          name: downloads

@@ -1,11 +1,11 @@
-{{- $fullName := include "nzbget.fullname" . -}}
+{{- $fullName := include "lazylibrarian.fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "nzbget.name" . }}
-    chart: {{ template "nzbget.chart" . }}
+    app: {{ template "lazylibrarian.name" . }}
+    chart: {{ template "lazylibrarian.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}
@@ -20,4 +20,4 @@ spec:
           - path: /
             backend:
               serviceName: {{ $fullName }}
-              servicePort: 6789
+              servicePort: 5299
