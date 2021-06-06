@@ -1,82 +1,124 @@
-# Default values for plexms.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
+#
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/k8s-at-home/library-charts/tree/main/charts/stable/common/values.yaml
+#
 
 image:
-  repository: nginx
+  repository: ghcr.io/k8s-at-home/plex
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: v1.22.0.4163-d8c4875dd
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+strategy:
+  type: Recreate
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+env: {}
+  # TZ:
+  # ADVERTISE_IP:
+  # ALLOWED_NETWORKS:
+  # PLEX_CLAIM:
+  # # NOTE: Plex preference options are camelCase and CASE SENSITIVE!
+  # # You can do horrible things to your Plex configuration if you are not careful
+  # # See a full list at https://support.plex.tv/articles/201105343-advanced-hidden-server-settings/
+  # PLEX_PREFERENCE_1: "FriendlyName=plex-kubernetes"
+  # PLEX_PREFERENCE_2: "EnableIPv6=0"
+  # PLEX_PREFERENCE_3: "logDebug=0"
+  # PLEX_PREFERENCE_4: "DisableTLSv1_0=1"
+  # PLEX_PREFERENCE_5: "LanNetworksBandwidth=xxx.xxx.xxx.0/18\,xxx.xxx.xxx.0/24\,xxx.xxx.xxx.0/24"
+  # PLEX_PREFERENCE_6: "TranscoderQuality=2"
+  # PLEX_PREFERENCE_7: "TreatWanIpAsLocal=0"
+  # PLEX_PREFERENCE_8: "TranscoderH264BackgroundPreset=fast"
 
 service:
-  type: ClusterIP
-  port: 80
+  port:
+    port: 32400
+  # additionalServices:
+  # - enabled: true
+  #   nameSuffix: dnla-tcp
+  #   type: NodePort
+  #   port:
+  #     port: 32469
+  #     name: dnla-tcp
+  #     protocol: TCP
+  #     targetPort: 32469
+  #   externalTrafficPolicy: Local
+  # - enabled: true
+  #   nameSuffix: dnla-udp
+  #   type: NodePort
+  #   port:
+  #     port: 1900
+  #     name: dnla-udp
+  #     protocol: UDP
+  #     targetPort: 1900
+  #   externalTrafficPolicy: Local
 
 ingress:
   enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+# -- Enable devices to be discoverable
+hostNetwork: false
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+persistence:
+  config:
+    enabled: false
+    emptyDir:
+      enabled: false
+    mountPath: /config
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    # storageClass: "-"
+    # accessMode: ReadWriteOnce
+    # size: 1Gi
+    ## Do not delete the pvc upon helm uninstall
+    # skipuninstall: false
+    # existingClaim: ""
 
-nodeSelector: {}
+  transcode:
+    enabled: false
+    emptyDir:
+      enabled: false
+    mountPath: /transcode
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    # storageClass: "-"
+    # accessMode: ReadWriteOnce
+    # size: 1Gi
+    ## Do not delete the pvc upon helm uninstall
+    # skipuninstall: false
+    # existingClaim: ""
 
-tolerations: []
+# podSecurityContext:
+#   runAsUser: 568
+#   runAsGroup: 568
+#   fsGroup: 568
+#   # Hardware acceleration using an Intel iGPU w/ QuickSync
+#   # These IDs below should be matched to your `video` and `render` group on the host
+#   # To obtain those IDs run the following grep statement on the host:
+#   # $ cat /etc/group | grep "video\|render"
+#   # video:x:44:
+#   # render:x:109:
+#   supplementalGroups:
+#   - 44
+#   - 109
 
-affinity: {}
+# resources:
+#   requests:
+#     # Hardware acceleration using an Intel iGPU w/ QuickSync and
+#     # using intel-gpu-plugin (https://github.com/intel/intel-device-plugins-for-kubernetes)
+#     gpu.intel.com/i915: 1
+#     cpu: 200m
+#     memory: 256Mi
+#   limits:
+#     # Hardware acceleration using an Intel iGPU w/ QuickSync and
+#     # using intel-gpu-plugin (https://github.com/intel/intel-device-plugins-for-kubernetes)
+#     gpu.intel.com/i915: 1
+#     memory: 4096Mi
