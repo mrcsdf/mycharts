@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: linuxserver/jackett
+  repository: linuxserver/sonarr
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -22,11 +22,11 @@ ingress:
     kubernetes.io/tls-acme: "true"
   path: /
   hosts:
-    - jackett.smrtrock.com
+    - sonarr.smrtrock.com
   tls:
-   - secretName: jackett-smtrock.com
+   - secretName: sonarr-smrtrock-com
      hosts:
-       - jackett.smrtrock.com
+       - sonarr.smrtrock.com
 
 volumes:
   - name: myvolume
@@ -36,10 +36,16 @@ volumes:
 volumeMounts:
   - name: myvolume
     mountPath: "/config"
-    subPath: "configs/jackett"
+    subPath: "configs/sonarr"
   - name: myvolume
-    mountPath: "/downloads"
-    subPath: "downloads/jackett"
+    mountPath: "/downloads/deluge"
+    subPath: "downloads/deluge"
+  - name: myvolume
+    mountPath: "/downloads/nzbget"
+    subPath: "downloads/nzbget"
+  - name: myvolume
+    mountPath: "/tv"
+    subPath: "medias/tv"
 
 resources:
   requests:
@@ -48,8 +54,6 @@ resources:
   limits:
     memory: 256Mi
     cpu: 0.5
-
-securityContext: {}
 
 nodeSelector: {}
 
